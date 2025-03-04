@@ -52,6 +52,20 @@ A smart office add-in that integrates DeepSeek's AI capabilities directly into W
 2. Open WPS Office Developer Tools (Alt+F11)
 3. Import module to your document/project
 4. Insert your DeepSeek API key in line 47
+5. Enable Macros:
+   Open WPS pro Writer: Go to File > Options > Trust Center > Macro Security
+   Select "Enable all macros" (temporarily for setup)
+6. Insert the Macro:
+   Press Alt + F11 to open VBA editor, Right-click your document in the Project Explorer, Select Insert > Module, Paste the provided code
+8. Set API Key:
+   In the code, locate api_key = "Your_API_Key_strings", Replace "Your_API_Key_strings" with your actual DeepSeek API key
+9. Assign Shortcut:
+   Go to Tools > Customize Keyboard, Find and assign a shortcut to the 智慧办公 macro
+10. Use the Macro:
+   Select text in your document, Run the macro (either through the macro dialog or assigned shortcut)
+
+The AI response will appear below your selection with formatted suggestions
 
 ```vba
+apply your API key following DeepSeek guidlines from its official website.
 api_key = "Your_API_Key_String" ' Replace with actual key
