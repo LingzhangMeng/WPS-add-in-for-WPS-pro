@@ -1,0 +1,171 @@
+' Developed by 广西医学科学院&广西壮族自治区人民医院 心血管疾病研究所 孟令章 教授
+
+Function CallDeepSeekAPI(api_key As String, inputText As String) As String
+    Dim API As String
+    Dim SendTxt As String
+    Dim Http As Object
+    Dim status_code As Integer
+    Dim response As String
+
+    API = "https://api.deepseek.com/chat/completions"
+    SendTxt = "{""model"": ""deepseek-chat"", ""messages"": [{""role"":""system"", ""content"":""You are a Word assistant""}, {""role"":""user"", ""content"":""" & inputText & """}], ""stream"": false}"
+
+    Set Http = CreateObject("MSXML2.XMLHTTP")
+    With Http
+        .Open "POST", API, False
+        .setRequestHeader "Content-Type", "application/json"
+        .setRequestHeader "Authorization", "Bearer " & api_key
+        .send SendTxt
+        status_code = .Status
+        response = .responseText
+    End With
+
+    If status_code = 200 Then
+        CallDeepSeekAPI = response
+    Else
+        CallDeepSeekAPI = "Error: " & status_code & " - " & response
+    End If
+
+    Set Http = Nothing
+End Function
+
+Sub 智慧办公()
+    Dim api_key As String
+    Dim inputText As String
+    Dim response As String
+    Dim regex As Object
+    Dim matches As Object
+    Dim originalSelection As Object
+    Dim regexRemove As Object
+    Dim regexNumber As Object
+    Dim regexSuggestion As Object
+    Dim regexSummary As Object
+    Dim regexCaution As Object
+    Dim regexNewline As Object
+    Dim regexSummaryStart As Object
+
+    api_key = "Your_API_Key_String"
+    If api_key = "" Then
+        MsgBox "Please enter the API key."
+        Exit Sub
+        End If
+' Modified selection verification
+    If Selection.Range.Start = Selection.Range.End Then
+        MsgBox "Please select text."
+        Exit Sub
+    End If
+
+    Set originalSelection = Selection.Range.Duplicate
+
+    inputText = Replace(Replace(Replace(Replace(Replace(Selection.Text, "\", "\\"), vbCrLf, ""), vbCr, ""), vbLf, ""), Chr(34), "\""")
+    response = CallDeepSeekAPI(api_key, inputText)
+
+    If Left(response, 5) <> "Error" Then
+        Set regex = CreateObject("VBScript.RegExp")
+        With regex
+            .Global = True
+            .MultiLine = True
+            .IgnoreCase = False
+            .Pattern = """content"":""(.*?)"""
+        End With
+        Set matches = regex.Execute(response)
+        If matches.Count > 0 Then
+            response = matches(0).SubMatches(0)
+            response = Replace(Replace(response, """", Chr(34)), """", Chr(34))
+
+            ' Remove markdown symbols
+            Set regexRemove = CreateObject("VBScript.RegExp")
+            With regexRemove
+                .Global = True
+                .MultiLine = True
+                .IgnoreCase = False
+                .Pattern = "(\\n{1,2}|#{1,3}|\*{1,2}|```)"
+                response = .Replace(response, "")
+            End With
+
+            ' Add line breaks before numbered items
+            Set regexNumber = CreateObject("VBScript.RegExp")
+            With regexNumber
+                .Global = True
+                .MultiLine = True
+                .Pattern = "(\d+\.\s)"
+                response = .Replace(response, vbCrLf & "$1")
+            End With
+
+            ' Add line breaks and color for suggestions
+            Set regexSuggestion = CreateObject("VBScript.RegExp")
+            With regexSuggestion
+                .Global = True
+                .MultiLine = True
+                .Pattern = "(-\s建议.*?)"
+                response = .Replace(response, vbCrLf & "$1")
+            End With
+
+            ' Add line breaks for summary suggestions
+            Set regexSummary = CreateObject("VBScript.RegExp")
+            With regexSummary
+                .Global = True
+                .MultiLine = True
+                .Pattern = "(综合建议.*?)"
+                response = .Replace(response, vbCrLf & "$1")
+            End With
+
+            ' Add line breaks for caution sentences
+            Set regexCaution = CreateObject("VBScript.RegExp")
+            With regexCaution
+                .Global = True
+                .MultiLine = True
+                .Pattern = "(注意事项.*?)"
+                response = .Replace(response, vbCrLf & "$1")
+            End With
+
+            ' Add line breaks for sentences containing "建议"
+            Set regexNewline = CreateObject("VBScript.RegExp")
+            With regexNewline
+                .Global = True
+                .MultiLine = True
+                .Pattern = "(建议.*?\.)"
+                response = .Replace(response, vbCrLf & "$1")
+            End With
+
+            ' Add line breaks for sentences starting with "总结"
+            Set regexSummaryStart = CreateObject("VBScript.RegExp")
+            With regexSummaryStart
+                .Global = True
+                .MultiLine = True
+                .Pattern = "(总结.*?)"
+                response = .Replace(response, vbCrLf & "$1")
+            End With
+
+            ' Deselect the original text
+            Selection.Collapse Direction:=0  ' wdCollapseEnd = 0
+
+            ' Insert the content on a new line
+            Selection.TypeParagraph
+            Selection.TypeText Text:=response
+
+            ' Apply color to specific sentences
+            With Selection.Find
+                .ClearFormatting
+                .Text = "-\s建议*"
+                .Replacement.ClearFormatting
+                .Replacement.Font.Color = 65280  ' wdColorGreen
+                .Execute Replace:=2  ' wdReplaceAll = 2
+            End With
+
+            With Selection.Find
+                .ClearFormatting
+                .Text = "注意事项*"
+                .Replacement.ClearFormatting
+                .Replacement.Font.Color = 255  ' wdColorRed
+                .Execute Replace:=2
+            End With
+
+            originalSelection.Select
+        Else
+            MsgBox "Failed to parse API response.", vbExclamation
+        End If
+    Else
+        MsgBox response, vbCritical
+    End If
+End Sub
