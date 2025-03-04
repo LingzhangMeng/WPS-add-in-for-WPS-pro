@@ -2,7 +2,7 @@
 
 ![WPS-DeepSeek Integration](https://via.placeholder.com/800x400.png?text=WPS+Office+%26+DeepSeek+AI+Integration)
 
-A smart office add-in that integrates DeepSeek's AI capabilities directly into WPS Office Professional. Developed by 广西医学科学院&广西壮族自治区人民医院 Cardiovascular Disease Institute, Professor Meng Lingzhang.
+A smart office add-in that integrates DeepSeek's AI capabilities directly into WPS Office Professional. Developed by Prof. Lingzhang meng, from Institut for Cardiovascular Diseases, Guangxi Academy of Medical Sciences & The People's Hospital of Guangxi Zhuang Autonomous Region (广西医学科学院&广西壮族自治区人民医院 心血管疾病研究所 孟令章 教授）.
 
 ## Key Features ✨
 
