@@ -63,11 +63,16 @@ A smart office add-in that integrates DeepSeek's AI capabilities directly into W
 10. Use the Macro:
    Select text in your document, Run the macro (either through the macro dialog or assigned shortcut)
 
-The AI response will appear below your selection with formatted suggestions
+The AI response will appear below your selection with formatted suggestions.
+
+## For example
+<img width="632" alt="Weixin Image_20250304110142" src="https://github.com/user-attachments/assets/842d0ed9-d94d-4ea3-9631-2b86c6c05c67" />
+
+
 
 ```vba
 apply your API key following DeepSeek guidlines from its official website.
 api_key = "Your_API_Key_String" ' Replace with actual key
 
-<img width="632" alt="Weixin Image_20250304110142" src="https://github.com/user-attachments/assets/c919cd47-2cf6-4567-a2ca-08f289d990fa" />
+
 
