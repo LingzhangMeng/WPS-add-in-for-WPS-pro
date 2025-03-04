@@ -69,3 +69,6 @@ The AI response will appear below your selection with formatted suggestions
 ```vba
 apply your API key following DeepSeek guidlines from its official website.
 api_key = "Your_API_Key_String" ' Replace with actual key
+
+<img width="632" alt="Weixin Image_20250304110142" src="https://github.com/user-attachments/assets/c919cd47-2cf6-4567-a2ca-08f289d990fa" />
+
